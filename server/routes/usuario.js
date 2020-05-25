@@ -10,8 +10,6 @@ const app = express();
 
 app.get('/usuario', function(req, res) {
 
-    console.log('entra al get...' + process.env.URLDB);
-
     let desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -19,8 +17,8 @@ app.get('/usuario', function(req, res) {
     limite = Number(limite);
 
     Usuario.find({ estado: true }, 'nombre email role estado google img')
-        //.skip(desde)
-        //.limit(limite)
+        .skip(desde)
+        .limit(limite)
         .exec((err, usuarios) => {
 
             if (err) {
@@ -30,8 +28,7 @@ app.get('/usuario', function(req, res) {
                 });
             }
 
-            //Usuario.countDocuments
-            Usuario.countDocuments({ estado: true }, (err, conteo) => {
+            Usuario.count({ estado: true }, (err, conteo) => {
 
                 res.json({
                     ok: true,
@@ -50,6 +47,8 @@ app.get('/usuario', function(req, res) {
 app.post('/usuario', function(req, res) {
 
     let body = req.body;
+
+    console.log('body: ', body);
 
     let usuario = new Usuario({
         nombre: body.nombre,
